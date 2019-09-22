@@ -1,38 +1,21 @@
 import React from "react";
 import Layout from "../components/layout";
-import { Link, graphql, useStaticQuery } from "gatsby";
-import blogStyles from './blog.module.scss';
+import { Link } from "gatsby";
+// import getContent from "../helpers/getContent";
+import useGetContent from "../hooks/useGetContent";
+import blogStyles from "./blog.module.scss";
+import Head from '../components/head';
 
 const BlogPage = () => {
-  const { allMarkdownRemark } = useStaticQuery(graphql`
-    query {
-      allMarkdownRemark {
-        edges {
-          node {
-            frontmatter {
-              title
-              date
-            }
-            fields {
-              slug
-            }
-          }
-        }
-      }
-    }
-  `);
-
-  const frontmatter = allMarkdownRemark.edges.map(e => ({
-    title: e.node.frontmatter.title,
-    date: e.node.frontmatter.date,
-    slug: e.node.fields.slug,
-  }));
+  const data = useGetContent();
+  // const data = getContent();
 
   return (
     <Layout>
-      <ol>
-        {frontmatter.map(({ title, date, slug }, i) => (
-          <li key={i}>
+      <Head title="Blog"/>
+      <ol className={blogStyles.posts}>
+        {data.map(({ title, date, slug }, i) => (
+          <li key={i} className={blogStyles.post}>
             <Link to={`/blog/${slug}`}>
               <h2>{title}</h2>
               <p>Date: {date}</p>
